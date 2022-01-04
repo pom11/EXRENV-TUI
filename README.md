@@ -1,2 +1,2 @@
 # EXRENV-TUI
-dashboard for exrproxy-env
+Dashboard for Blocknet's [EXRPROXY-ENV](https://github.com/blocknetdx/exrproxy-env)
