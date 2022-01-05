@@ -12,8 +12,7 @@ from textual.widget import Widget
 from utils.footer import CustomFooter
 from utils.header import CustomHeader
 from utils.system import CPUUsage, DISKUsage, RAMUsage, SystemInfo
-
-pretty.install()
+from utils.docker import DockerInfo
 
 
 class Main(App):
@@ -21,7 +20,6 @@ class Main(App):
 
     async def on_load(self, event: events.Load) -> None:
         """Bind keys with the app loads (but before entering application mode)"""
-        # await self.bind("h", "view.toggle('sidebar')", "Help")
         await self.bind("q", "quit", "Quit")
 
 
@@ -39,15 +37,21 @@ class Main(App):
         grid.add_areas(
             area1="c1-start|c40-end,r1",
             area2="c1-start|c40-end,r40",
-            area3="c11-start|c15-end,r3-start|r4-end",
-            area4="c16-start|c20-end,r5-start|r6-end",
+            area3="c1-start|c15-end,r2-start|r10-end",
+            area4="c16-start|c19-end,r2-start|r7-end",
+            area5="c16-start|c19-end,r8-start|r12-end",
+            area6="c20-start|c23-end,r2-start|r7-end",
+            area7="c20-start|c23-end,r8-start|r14-end",
         )
 
         grid.place(
             area1 = CustomHeader(),
             area2 = CustomFooter(),
-            area3 = CPUUsage(),
-            area4 = DISKUsage()
+            area3 = SystemInfo(),
+            area4 = RAMUsage(),
+            area5 = CPUUsage(),
+            area6 = DISKUsage(),
+            area7 = DockerInfo()
             )
 
         grid.set_align("stretch", "center")

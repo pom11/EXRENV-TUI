@@ -15,7 +15,7 @@ extIP = externalIP()
 class SystemInfo(Widget):
 
     def getSystemInfo(self):
-        table = Table(show_header=True, header_style='bold magenta', show_lines=False, box=box.MINIMAL)
+        table = Table(show_header=True, header_style='bold magenta', show_lines=False, box=box.HEAVY)
         table.add_column("System", style="dim", justify='left')
         table.add_column("", justify='left')
         info = {}
@@ -39,7 +39,7 @@ class SystemInfo(Widget):
 class RAMUsage(Widget):
 
     def getCurrentUsage(self):
-        table = Table(show_header=True, header_style='bold magenta', show_lines=False, box=box.MINIMAL)
+        table = Table(show_header=True, header_style='bold magenta', show_lines=False, box=box.HEAVY)
         table.add_column("RAM", style="dim", justify='left')
         table.add_column("", justify='left')
         info = {}
@@ -64,8 +64,8 @@ class CPUUsage(Widget):
 
     def getCurrentUsage(self):
     
-        table = Table(show_header=True, header_style='bold magenta', show_lines=False, box=box.MINIMAL)
-        table.add_column("CPU", style="dim", justify='left')
+        table = Table(show_header=True, header_style='bold magenta', show_lines=False, box=box.HEAVY)
+        table.add_column("CPU  ", style="dim", justify='left')
         table.add_column("", justify='left')
         info = {}
         info['used'] = '{:.2f}'.format(round(psutil.cpu_percent()))+" %"
@@ -84,7 +84,7 @@ class CPUUsage(Widget):
 class DISKUsage(Widget):
 
     def getCurrentUsage(self):
-        table = Table(show_header=True, header_style='bold magenta', show_lines=False, box=box.MINIMAL)
+        table = Table(show_header=True, header_style='bold magenta', show_lines=False, box=box.HEAVY)
         table.add_column("DISK", style="dim", justify='left')
         table.add_column("", justify='left')
         hdd = psutil.disk_usage('/')
