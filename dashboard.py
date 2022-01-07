@@ -33,7 +33,7 @@ class Main(App):
         for i in range(40):
             grid.add_row(fraction=1, name=f"r{i+1}")
 
-
+        # grid.set_align("stretch", "center")
         grid.add_areas(
             area1="c1-start|c40-end,r1",
             area2="c1-start|c40-end,r40",
@@ -54,7 +54,7 @@ class Main(App):
             area7 = DockerInfo()
             )
 
-        grid.set_align("stretch", "center")
+        
 
     # async def on_mount(self, event: events.Mount) -> None:
     #     """Create and dock the widgets."""

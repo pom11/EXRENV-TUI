@@ -6,9 +6,17 @@ import rich.box as box
 import platform, socket, re, uuid, psutil, requests
 
 def externalIP():
-    req = requests.get('http://checkip.amazonaws.com')
-    req = req.text
-    return req[:-2]
+    try:
+        req = requests.get('http://checkip.amazonaws.com')
+        req = req.text
+        return req[:-2]
+    except Exception as e:
+        try:
+            req = requests.get('http://ifconfig.co')
+            req = req.text.split('code')[3].split('>')[1].split('<')[0]
+            return req
+        except Exception as e:
+            return ''
 
 extIP = externalIP()
 

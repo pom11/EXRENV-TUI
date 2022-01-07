@@ -38,6 +38,9 @@ class DockerInfo(Widget):
 				table.add_row(k, v)
 		return table
 
+	def on_mount(self):
+		self.set_interval(1, self.refresh)
+
 	def render(self):
 		table = self.getDocker()
 		return Static(renderable=table)
