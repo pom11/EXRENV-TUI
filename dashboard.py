@@ -11,7 +11,7 @@ from textual.reactive import Reactive
 from textual.widget import Widget
 from utils.footer import CustomFooter
 from utils.header import CustomHeader
-from utils.system import CPUUsage, DISKUsage, RAMUsage, SystemInfo
+from utils.system import CPUUsage, DISKUsage, RAMUsage, SystemInfo, DockerContainerStats
 from utils.docker import DockerInfo
 
 
@@ -42,6 +42,7 @@ class Main(App):
             area5="c16-start|c19-end,r8-start|r12-end",
             area6="c20-start|c23-end,r2-start|r7-end",
             area7="c20-start|c23-end,r8-start|r14-end",
+            area7="c1-start|c15-end,r8-start|r14-end",
         )
 
         grid.place(
@@ -51,7 +52,8 @@ class Main(App):
             area4 = RAMUsage(),
             area5 = CPUUsage(),
             area6 = DISKUsage(),
-            area7 = DockerInfo()
+            area7 = DockerInfo(),
+            area8 = DockerContainerStats()
             )
 
         
