@@ -48,6 +48,33 @@ class DockerInfo(Widget):
 		return Static(renderable=table)
 
 
+class ContainerKill(Widget):
+
+	mouse_over = Reactive(False)
+
+	def __init__(self, id: str | None = None):
+		super().__init__(id=id)
+		self.id = id
+
+	def container(self):
+		try:
+			client = docker.from_env()
+			container = client.containers.get(self.id)
+			status = container.status()
+			return status
+		except Exception as e:
+			return "Error"
+
+	def on_mount(self):
+		self.container_data = self.container()
+		self.set_interval(1, self.refresh)
+
+	def render(self):
+		data = self.container()
+		return Panel(data, style=("on red" if self.mouse_over else ""))
+
+
+
 class DockerContainerStats(Widget):
 
 	mouse_over = Reactive(False)
@@ -61,14 +88,16 @@ class DockerContainerStats(Widget):
 
 	def on_mount(self):
 		self.client = self.docker_client()
+		self.set_interval(1, self.refresh)
 
 	def getContainers(self) -> Table:
 		containers = self.client.containers.list()
-		table = Table(show_header=True, header_style='bold magenta', show_lines=False, box=box.HEAVY)
+		table = Table(show_header=False, header_style='bold magenta', show_lines=False, box=box.HEAVY)
 		table.add_column("Container", style="dim", justify="left")
 		table.add_column("Name", style="dim", justify="left")
+		table.add_column("Status", style="dim", justify="left")
 		for c in containers:
-			table.add_row(c.id, c.name)
+			table.add_row(c.short_id, c.name[13::], ContainerKill(c.id))
 		return table
 
 	def render(self):
