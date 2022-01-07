@@ -6,22 +6,14 @@ from rich.table import Table
 from rich.panel import Panel
 import rich.box as box
 
-import docker
-
 class DockerInfo(Widget):
 
-	def getDockerInfo(self):
-		try:
-			client = docker.from_env()
-			info = client.info()
-			client.close()
-			return info
-		except Exception as e:
-			return False
-
+	def __init__(self, client):
+		super().__init__(client = client)
+		self.client = client
 
 	def getDocker(self):
-		info = self.getDockerInfo()
+		info = self.client.info()
 		table = Table(show_header=True, header_style='bold magenta', show_lines=False, box=box.HEAVY)
 		table.add_column("Docker", style="dim", justify="left")
 		table.add_column("", justify="left")
@@ -52,21 +44,20 @@ class ContainerKill(Widget):
 
 	mouse_over = Reactive(False)
 
-	def __init__(self, id: str | None = None):
-		super().__init__(id=id)
+	def __init__(self, client, id):
+		super().__init__(client=client, id=id)
+		self.client = client
 		self.id = id
 
 	def container(self):
 		try:
-			client = docker.from_env()
-			container = client.containers.get(self.id)
+			container = self.client.containers.get(self.id)
 			status = container.status()
 			return status
 		except Exception as e:
 			return "Error"
 
 	def on_mount(self):
-		self.container_data = self.container()
 		self.set_interval(1, self.refresh)
 
 	def render(self):
@@ -79,15 +70,11 @@ class DockerContainerStats(Widget):
 
 	mouse_over = Reactive(False)
 
-	def docker_client(self):
-		try:
-			client = docker.from_env()
-			return client
-		except Exception as e:
-			return False
+	def __init__(self, client):
+		super().__init__(client=client)
+		self.client = client
 
 	def on_mount(self):
-		self.client = self.docker_client()
 		self.set_interval(1, self.refresh)
 
 	def getContainers(self) -> Table:
@@ -97,7 +84,7 @@ class DockerContainerStats(Widget):
 		table.add_column("Name", style="dim", justify="left")
 		table.add_column("Status", style="dim", justify="left")
 		for c in containers:
-			table.add_row(c.short_id, c.name[13::], ContainerKill(c.id))
+			table.add_row(c.short_id, c.name[13::], ContainerKill(self.client, c.id))
 		return table
 
 	def render(self):

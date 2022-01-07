@@ -14,6 +14,7 @@ from utils.header import CustomHeader
 from utils.system import CPUUsage, DISKUsage, RAMUsage, SystemInfo
 from utils.docker import DockerInfo, DockerContainerStats
 
+import docker
 
 class Main(App):
     """An example of a very simple Textual App"""
@@ -23,8 +24,16 @@ class Main(App):
         await self.bind("q", "quit", "Quit")
 
 
+    def docker_client(self):
+        try:
+            client = docker.from_env()
+            return client
+        except Exception as e:
+            return False
+
     async def on_mount(self, event: events.Mount) -> None:
         grid = await self.view.dock_grid(edge='left')
+        client = self.docker_client()
         for i in range(40):
             # if i == 0:
                 # grid.add_column(fraction=1, name=f"c{i+1}", max_size=20, size=0)
@@ -52,8 +61,8 @@ class Main(App):
             area4 = RAMUsage(),
             area5 = CPUUsage(),
             area6 = DISKUsage(),
-            area7 = DockerInfo(),
-            area8 = DockerContainerStats()
+            area7 = DockerInfo(client),
+            area8 = DockerContainerStats(client)
             )
 
         
