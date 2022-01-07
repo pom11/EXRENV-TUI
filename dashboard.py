@@ -61,8 +61,8 @@ class Main(App):
             area4 = RAMUsage(),
             area5 = CPUUsage(),
             area6 = DISKUsage(),
-            area7 = DockerInfo(client),
-            area8 = DockerContainerStats(client)
+            area7 = DockerInfo( client=client),
+            area8 = DockerContainerStats( client=client)
             )
 
         

@@ -6,11 +6,9 @@ from rich.table import Table
 from rich.panel import Panel
 import rich.box as box
 
-from docker import DockerClient
-
 class DockerInfo(Widget):
 
-	def __init__(self, client: DockerClient) -> None:
+	def __init__(self, client):
 		self.client = client
 
 	def getDocker(self):
@@ -45,7 +43,7 @@ class ContainerKill(Widget):
 
 	mouse_over = Reactive(False)
 
-	def __init__(self, client: DockerClient, id: str) -> None:
+	def __init__(self, client, id):
 		self.client = client
 		self.id = id
 
@@ -70,7 +68,7 @@ class DockerContainerStats(Widget):
 
 	mouse_over = Reactive(False)
 
-	def __init__(self, client: DockerClient):
+	def __init__(self, client):
 		self.client = client
 
 	def on_mount(self):
