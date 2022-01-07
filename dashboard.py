@@ -16,6 +16,12 @@ from utils.docker import DockerInfo, DockerContainerStats
 
 import docker
 
+try:
+    client = docker.from_env()
+    client.close()
+except Exception as e:
+    return e
+
 class Main(App):
     """An example of a very simple Textual App"""
 
@@ -34,13 +40,10 @@ class Main(App):
     async def on_mount(self, event: events.Mount) -> None:
         grid = await self.view.dock_grid(edge='left')
         client = self.docker_client()
-        for i in range(40):
-            # if i == 0:
-                # grid.add_column(fraction=1, name=f"c{i+1}", max_size=20, size=0)
-            # else:
-            grid.add_column(fraction=1, name=f"c{i+1}")
-        for i in range(40):
-            grid.add_row(fraction=1, name=f"r{i+1}")
+        
+        grid.add_column(fraction=1, name=f"c{i+1}", repeate=40)
+        
+        grid.add_row(fraction=1, name=f"r{i+1}", repeate=40)
 
         # grid.set_align("stretch", "center")
         grid.add_areas(
@@ -62,7 +65,7 @@ class Main(App):
             area5 = CPUUsage(),
             area6 = DISKUsage(),
             area7 = DockerInfo( client=client),
-            area8 = DockerContainerStats( client=client)
+            DockerContainerStats( client=client)
             )
 
         
