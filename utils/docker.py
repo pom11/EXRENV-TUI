@@ -9,7 +9,6 @@ import rich.box as box
 class DockerInfo(Widget):
 
 	def __init__(self, client):
-		super().__init__(client = client)
 		self.client = client
 
 	def getDocker(self):
@@ -45,7 +44,6 @@ class ContainerKill(Widget):
 	mouse_over = Reactive(False)
 
 	def __init__(self, client, id):
-		super().__init__(client=client, id=id)
 		self.client = client
 		self.id = id
 
@@ -71,7 +69,6 @@ class DockerContainerStats(Widget):
 	mouse_over = Reactive(False)
 
 	def __init__(self, client):
-		super().__init__(client=client)
 		self.client = client
 
 	def on_mount(self):
