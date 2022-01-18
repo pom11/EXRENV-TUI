@@ -20,7 +20,8 @@ try:
     client = docker.from_env()
     client.close()
 except Exception as e:
-    return e
+    print(f"{e}")
+    raise
 
 class Main(App):
     """An example of a very simple Textual App"""
@@ -29,23 +30,14 @@ class Main(App):
         """Bind keys with the app loads (but before entering application mode)"""
         await self.bind("q", "quit", "Quit")
 
-
-    def docker_client(self):
-        try:
-            client = docker.from_env()
-            return client
-        except Exception as e:
-            return False
-
     async def on_mount(self, event: events.Mount) -> None:
         grid = await self.view.dock_grid(edge='left')
-        client = self.docker_client()
         
-        grid.add_column(fraction=1, name=f"c{i+1}", repeate=40)
+        for i in range(40):
+            grid.add_column(fraction=1, name=f"c{i+1}")
+        for i in range(40):
+            grid.add_row(fraction=1, name=f"r{i+1}")
         
-        grid.add_row(fraction=1, name=f"r{i+1}", repeate=40)
-
-        # grid.set_align("stretch", "center")
         grid.add_areas(
             area1="c1-start|c40-end,r1",
             area2="c1-start|c40-end,r40",
@@ -55,7 +47,10 @@ class Main(App):
             area6="c20-start|c23-end,r2-start|r7-end",
             area7="c20-start|c23-end,r8-start|r14-end",
             area8="c1-start|c15-end,r10-start|r25-end",
+            # area9="c16-start|c17-end,r10-start|r25-end"
         )
+        for i in range(8):
+            grid.set_align("stretch", f"area{i+1}")
 
         grid.place(
             area1 = CustomHeader(),
@@ -64,8 +59,8 @@ class Main(App):
             area4 = RAMUsage(),
             area5 = CPUUsage(),
             area6 = DISKUsage(),
-            area7 = DockerInfo( client=client),
-            DockerContainerStats( client=client)
+            area7 = DockerInfo(),
+            area8 = DockerContainerStats(),
             )
 
         

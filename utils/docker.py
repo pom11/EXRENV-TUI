@@ -6,13 +6,14 @@ from rich.table import Table
 from rich.panel import Panel
 import rich.box as box
 
+import docker 
+
 class DockerInfo(Widget):
 
-	def __init__(self, client):
-		self.client = client
-
 	def getDocker(self):
-		info = self.client.info()
+		client = docker.from_env()
+		info = client.info()
+		client.close()
 		table = Table(show_header=True, header_style='bold magenta', show_lines=False, box=box.HEAVY)
 		table.add_column("Docker", style="dim", justify="left")
 		table.add_column("", justify="left")
@@ -43,14 +44,12 @@ class ContainerKill(Widget):
 
 	mouse_over = Reactive(False)
 
-	def __init__(self, client, id):
-		self.client = client
-		self.id = id
-
 	def container(self):
 		try:
-			container = self.client.containers.get(self.id)
+			client = docker.from_env()
+			container = client.containers.get(self.id)
 			status = container.status()
+			client.close()
 			return status
 		except Exception as e:
 			return "Error"
@@ -68,14 +67,13 @@ class DockerContainerStats(Widget):
 
 	mouse_over = Reactive(False)
 
-	def __init__(self, client):
-		self.client = client
-
 	def on_mount(self):
 		self.set_interval(1, self.refresh)
 
 	def getContainers(self) -> Table:
-		containers = self.client.containers.list()
+		client = docker.from_env()
+		containers = client.containers.list()
+		client.close()
 		table = Table(show_header=False, header_style='bold magenta', show_lines=False, box=box.HEAVY)
 		table.add_column("Container", style="dim", justify="left")
 		table.add_column("Name", style="dim", justify="left")
