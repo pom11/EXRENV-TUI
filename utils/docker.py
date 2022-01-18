@@ -79,7 +79,8 @@ class DockerContainerStats(Widget):
 		table.add_column("Name", style="dim", justify="left")
 		table.add_column("Status", style="dim", justify="left")
 		for c in containers:
-			table.add_row(c.short_id, c.name[13::], c.status())
+			if 'exrproxy-env' in c.name:
+				table.add_row(c.short_id, c.name[13::], c.status)
 		return table
 
 	def render(self):
