@@ -95,7 +95,7 @@ class DockerContainerStats(Widget):
 			if 'exrproxy-env' in c.name:
 				stats = c.stats(stream=False)
 				usagedelta = stats['cpu_stats']['cpu_usage']['total_usage'] - stats['precpu_stats']['cpu_usage']['total_usage']
-				systemdelta = stats['cpu_stats']['cpu_usage']['system_cpu_usage'] - stats['precpu_stats']['cpu_usage']['system_cpu_usage']
+				systemdelta = stats['cpu_stats']['system_cpu_usage'] - stats['precpu_stats']['system_cpu_usage']
 				len_cpu = len(stats['cpu_stats']['cpu_usage']['percpu_usage'])
 				cpu = round((usagedelta / systemdelta) * len_cpu * 100, 2)
 				ram = convert_size(stats['memory_stats']['usage'])
