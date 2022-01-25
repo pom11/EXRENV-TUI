@@ -97,7 +97,7 @@ class DockerContainerStats(Widget):
 				usagedelta = stats['cpu_stats']['cpu_usage']['total_usage'] - stats['precpu_stats']['cpu_usage']['total_usage']
 				systemdelta = stats['cpu_stats']['system_cpu_usage'] - stats['precpu_stats']['system_cpu_usage']
 				len_cpu = len(stats['cpu_stats']['cpu_usage']['percpu_usage'])
-				cpu = round((usagedelta / systemdelta) * len_cpu * 100, 2)
+				cpu = str(round((usagedelta / systemdelta) * len_cpu * 100, 2))+ " %"
 				ram = convert_size(stats['memory_stats']['usage'])
 				net_t = convert_size(stats['networks']['eth0']['tx_bytes'])
 				net_r = convert_size(stats['networks']['eth0']['rx_bytes'])
