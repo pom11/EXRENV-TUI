@@ -15,7 +15,7 @@ def convert_size(size_bytes):
 	i = int(math.floor(math.log(size_bytes, 1024)))
 	p = math.pow(1024, i)
 	s = round(size_bytes / p, 2)
-	return f"{s} {size_name[i]}"
+	return f"{s}{size_name[i]}"
 
 class DockerInfo(Widget):
 
@@ -77,7 +77,7 @@ class DockerContainerStats(Widget):
 	mouse_over = Reactive(False)
 
 	def on_mount(self):
-		self.set_interval(1, self.refresh)
+		self.set_interval(3, self.refresh)
 
 	def getContainers(self) -> Table:
 		client = docker.from_env()
@@ -87,21 +87,25 @@ class DockerContainerStats(Widget):
 		table.add_column("Container", style="dim", justify="left")
 		table.add_column("Name", style="dim", justify="left")
 		table.add_column("Status", style="dim", justify="left")
-		table.add_column("CPU", style="dim", justify="left")
-		table.add_column("RAM", style="dim", justify="left")
-		table.add_column("NET transmit", style="dim", justify="left")
-		table.add_column("NET received", style="dim", justify="left")
+		table.add_column("CPU %", style="dim", justify="left")
+		table.add_column("MEM USAGE / LIMIT", style="dim", justify="left")
+		table.add_column("MEM %", style="dim", justify="left")
+		table.add_column("NET I/O", style="dim", justify="left")
 		for c in containers:
 			if 'exrproxy-env' in c.name:
 				stats = c.stats(stream=False)
 				usagedelta = stats['cpu_stats']['cpu_usage']['total_usage'] - stats['precpu_stats']['cpu_usage']['total_usage']
 				systemdelta = stats['cpu_stats']['system_cpu_usage'] - stats['precpu_stats']['system_cpu_usage']
 				len_cpu = len(stats['cpu_stats']['cpu_usage']['percpu_usage'])
-				cpu = str(round((usagedelta / systemdelta) * len_cpu * 100, 2))+ " %"
-				ram = convert_size(stats['memory_stats']['usage'])
+				cpu = str(round((usagedelta / systemdelta) * len_cpu * 100, 2))+ "%"
+				ram_limit = convert_size(stats['memory_stats']['limit'])
+				ram_usage = convert_size(stats['memory_stats']['usage'])
+				ram = ram_usage+" / "+ram_limit
+				ram_precent = str(round(stats['memory_stats']['usage']/stats['memory_stats']['limit'],2)*100)+"%"
 				net_t = convert_size(stats['networks']['eth0']['tx_bytes'])
 				net_r = convert_size(stats['networks']['eth0']['rx_bytes'])
-				table.add_row(c.short_id, c.name[13::], c.status, cpu, ram, net_t, net_r)
+				net = net_r+" / "+net_t
+				table.add_row(c.short_id, c.name[13::], c.status, cpu, ram, ram_precent, net)
 		return table
 
 	def render(self):
