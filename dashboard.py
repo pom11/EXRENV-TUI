@@ -45,8 +45,8 @@ class Main(App):
             area4="c16-start|c19-end,r2-start|r7-end",
             area5="c16-start|c19-end,r8-start|r12-end",
             area6="c20-start|c23-end,r2-start|r7-end",
-            area7="c20-start|c23-end,r8-start|r14-end",
-            area8="c1-start|c15-end,r10-start|r25-end",
+            area7="c23-start|c26-end,r8-start|r14-end",
+            area8="c1-start|c23-end,r11-start|r35-end",
         )
         for i in range(8):
             grid.set_align("stretch", f"area{i+1}")
@@ -58,8 +58,8 @@ class Main(App):
             area4 = RAMUsage(),
             area5 = CPUUsage(),
             area6 = DISKUsage(),
-            area7 = DockerInfo(client=docker_client),
-            area8 = DockerContainerStats(client=docker_client),
+            area7 = DockerInfo(client=docker_client, refresh_rate=10),
+            area8 = DockerContainerStats(client=docker_client, refresh_rate=10),
             )
 
 

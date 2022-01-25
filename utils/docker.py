@@ -19,8 +19,9 @@ def convert_size(size_bytes):
 
 class DockerInfo(Widget):
 
-	def __init__(self, client: DockerClient) -> None:
+	def __init__(self, client: DockerClient, refresh_rate: int) -> None:
 		self.client = client
+		self.refresh_rate = refresh_rate
 		super().__init__()
 
 	def getDocker(self):
@@ -46,7 +47,7 @@ class DockerInfo(Widget):
 		return table
 
 	def on_mount(self):
-		self.set_interval(1, self.refresh)
+		self.set_interval(self.refresh_rate, self.refresh)
 
 	def render(self):
 		table = self.getDocker()
@@ -55,8 +56,9 @@ class DockerInfo(Widget):
 
 class ContainerKill(Widget):
 
-	def __init__(self, client: DockerClient) -> None:
+	def __init__(self, client: DockerClient, refresh_rate: int) -> None:
 		self.client = client
+		self.refresh_rate = refresh_rate
 		super().__init__()	
 
 	mouse_over = Reactive(False)
@@ -72,7 +74,7 @@ class ContainerKill(Widget):
 			return "Error"
 
 	def on_mount(self):
-		self.set_interval(1, self.refresh)
+		self.set_interval(self.refresh_rate, self.refresh)
 
 	def render(self):
 		data = self.container()
@@ -82,14 +84,15 @@ class ContainerKill(Widget):
 
 class DockerContainerStats(Widget):
 
-	def __init__(self, client: DockerClient) -> None:
+	def __init__(self, client: DockerClient, refresh_rate: int) -> None:
 		self.client = client
+		self.refresh_rate = refresh_rate
 		super().__init__()
 
 	mouse_over = Reactive(False)
 
 	def on_mount(self):
-		self.set_interval(3, self.refresh)
+		self.set_interval(self.refresh_rate, self.refresh)
 
 	def getContainers(self) -> Table:
 		# client = docker.from_env()
