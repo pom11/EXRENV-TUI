@@ -5,8 +5,17 @@ from textual import events
 from rich.table import Table
 from rich.panel import Panel
 import rich.box as box
-
+import math
 import docker 
+
+def convert_size(size_bytes):
+	if size_bytes == 0:
+		return "0B"
+	size_name = ("B", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB")
+	i = int(math.floor(math.log(size_bytes, 1024)))
+	p = math.pow(1024, i)
+	s = round(size_bytes / p, 2)
+	return f"{s} {size_name[i]}"
 
 class DockerInfo(Widget):
 
@@ -78,9 +87,21 @@ class DockerContainerStats(Widget):
 		table.add_column("Container", style="dim", justify="left")
 		table.add_column("Name", style="dim", justify="left")
 		table.add_column("Status", style="dim", justify="left")
+		table.add_column("CPU", style="dim", justify="left")
+		table.add_column("RAM", style="dim", justify="left")
+		table.add_column("NET transmit", style="dim", justify="left")
+		table.add_column("NET received", style="dim", justify="left")
 		for c in containers:
 			if 'exrproxy-env' in c.name:
-				table.add_row(c.short_id, c.name[13::], c.status)
+				stats = c.stats(stream=False)
+				usagedelta = stats['cpu_stats']['cpu_usage']['total_usage'] - stats['precpu_stats']['cpu_usage']['total_usage']
+				systemdelta = stats['cpu_stats']['cpu_usage']['system_cpu_usage'] - stats['precpu_stats']['cpu_usage']['system_cpu_usage']
+				len_cpu = len(stats['cpu_stats']['cpu_usage']['percpu_usage'])
+				cpu = round((usagedelta / systemdelta) * len_cpu * 100, 2)
+				ram = convert_size(stats['memory_stats']['usage'])
+				net_t = convert_size(stats['networks']['eth0']['tx_bytes'])
+				net_r = convert_size(stats['networks']['eth0']['rx_bytes'])
+				table.add_row(c.short_id, c.name[13::], c.status, cpu, ram, net_t, net_r)
 		return table
 
 	def render(self):
