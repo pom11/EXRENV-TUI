@@ -15,13 +15,14 @@ from utils.system import CPUUsage, DISKUsage, RAMUsage, SystemInfo
 from utils.docker import DockerInfo, DockerContainerStats
 
 import docker
+import sys
 
 try:
-    client = docker.from_env()
-    client.close()
+    docker_client = docker.from_env()
 except Exception as e:
     print("Docker daemon error. Please install docker to continue")
-    raise
+    sys.exit(0)
+    
 
 class Main(App):
 
@@ -57,8 +58,8 @@ class Main(App):
             area4 = RAMUsage(),
             area5 = CPUUsage(),
             area6 = DISKUsage(),
-            area7 = DockerInfo(),
-            area8 = DockerContainerStats(),
+            area7 = DockerInfo(client=docker_client),
+            area8 = DockerContainerStats(client=docker_client),
             )
 
 

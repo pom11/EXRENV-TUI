@@ -6,7 +6,7 @@ from rich.table import Table
 from rich.panel import Panel
 import rich.box as box
 import math
-import docker 
+from docker import DockerClient
 
 def convert_size(size_bytes):
 	if size_bytes == 0:
@@ -19,10 +19,14 @@ def convert_size(size_bytes):
 
 class DockerInfo(Widget):
 
+	def __init__(self, client: DockerClient) -> None:
+		self.client = client
+		super().__init__()
+
 	def getDocker(self):
-		client = docker.from_env()
-		info = client.info()
-		client.close()
+		# client = docker.from_env()
+		info = self.client.info()
+		# client.close()
 		table = Table(show_header=True, header_style='bold magenta', show_lines=False, box=box.HEAVY)
 		table.add_column("Docker", style="dim", justify="left")
 		table.add_column("", justify="left")
@@ -51,14 +55,18 @@ class DockerInfo(Widget):
 
 class ContainerKill(Widget):
 
+	def __init__(self, client: DockerClient) -> None:
+		self.client = client
+		super().__init__()	
+
 	mouse_over = Reactive(False)
 
 	def container(self):
 		try:
-			client = docker.from_env()
-			container = client.containers.get(self.id)
+			# client = docker.from_env()
+			container = self.client.containers.get(self.id)
 			status = container.status()
-			client.close()
+			# client.close()
 			return status
 		except Exception as e:
 			return "Error"
@@ -74,15 +82,19 @@ class ContainerKill(Widget):
 
 class DockerContainerStats(Widget):
 
+	def __init__(self, client: DockerClient) -> None:
+		self.client = client
+		super().__init__()
+
 	mouse_over = Reactive(False)
 
 	def on_mount(self):
 		self.set_interval(3, self.refresh)
 
 	def getContainers(self) -> Table:
-		client = docker.from_env()
-		containers = client.containers.list()
-		client.close()
+		# client = docker.from_env()
+		containers = self.client.containers.list()
+		# client.close()
 		table = Table(show_header=False, header_style='bold magenta', show_lines=False, box=box.HEAVY)
 		table.add_column("Container", style="dim", justify="left")
 		table.add_column("Name", style="dim", justify="left")
