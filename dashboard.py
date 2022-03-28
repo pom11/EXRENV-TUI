@@ -46,7 +46,7 @@ class Main(App):
             area5="c16-start|c19-end,r8-start|r12-end",
             area6="c20-start|c23-end,r2-start|r7-end",
             area7="c23-start|c26-end,r8-start|r14-end",
-            area8="c1-start|c23-end,r11-start|r35-end",
+            area8="c1-start|c22-end,r11-start|r35-end",
         )
         for i in range(8):
             grid.set_align("stretch", f"area{i+1}")
