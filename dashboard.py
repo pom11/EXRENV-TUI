@@ -18,7 +18,7 @@ import docker
 import sys
 
 try:
-    docker_client = docker.from_env()
+    docker_client = docker.from_env(max_pool_size=5,assert_hostname=True)
 except Exception as e:
     print("Docker daemon error. Please install docker to continue")
     sys.exit(0)
