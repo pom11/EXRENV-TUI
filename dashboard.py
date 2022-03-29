@@ -12,7 +12,7 @@ from textual.widget import Widget
 from utils.footer import CustomFooter
 from utils.header import CustomHeader
 from utils.system import CPUUsage, DISKUsage, RAMUsage, SystemInfo
-from utils.docker import DockerInfo, DockerContainerStats
+from utils.docker import DockerContainerStats #, DockerInfo
 
 import docker
 import sys
@@ -58,7 +58,7 @@ class Main(App):
             area4 = RAMUsage(),
             area5 = CPUUsage(),
             area6 = DISKUsage(),
-            area7 = DockerInfo(client=docker_client, refresh_rate=10),
+            # area7 = DockerInfo(client=docker_client, refresh_rate=10),
             area8 = DockerContainerStats(client=docker_client, refresh_rate=10),
             )
 

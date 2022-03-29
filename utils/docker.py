@@ -17,41 +17,41 @@ def convert_size(size_bytes):
 	s = round(size_bytes / p, 2)
 	return f"{s}{size_name[i]}"
 
-class DockerInfo(Widget):
+# class DockerInfo(Widget):
 
-	def __init__(self, client: DockerClient, refresh_rate: int) -> None:
-		self.client = client
-		self.refresh_rate = refresh_rate
-		super().__init__()
+# 	def __init__(self, client: DockerClient, refresh_rate: int) -> None:
+# 		self.client = client
+# 		self.refresh_rate = refresh_rate
+# 		super().__init__()
 
-	def getDocker(self):
-		# client = docker.from_env()
-		info = self.client.info()
-		# client.close()
-		table = Table(show_header=True, header_style='bold magenta', show_lines=False, box=box.HEAVY)
-		table.add_column("Docker", style="dim", justify="left")
-		table.add_column("", justify="left")
-		if info == False:
-			table.add_row("installed", str(info))
-		else:
-			data = {}
-			data['NCPU'] = str(info['NCPU'])
-			data['MemTotal'] = str(round(info['MemTotal']/ (1024.0 **3)))+" GB"
-			data['Images'] = str(info['Images'])
-			data['Containers'] = str(info['Containers'])
-			data['Running'] = str(info['ContainersRunning'])
-			data['Paused'] = str(info['ContainersPaused'])
-			data['Stopped'] = str(info['ContainersStopped'])
-			for k, v in data.items():
-				table.add_row(k, v)
-		return table
+# 	def getDocker(self):
+# 		# client = docker.from_env()
+# 		info = self.client.info()
+# 		# client.close()
+# 		table = Table(show_header=True, header_style='bold magenta', show_lines=False, box=box.HEAVY)
+# 		table.add_column("Docker", style="dim", justify="left")
+# 		table.add_column("", justify="left")
+# 		if info == False:
+# 			table.add_row("installed", str(info))
+# 		else:
+# 			data = {}
+# 			data['NCPU'] = str(info['NCPU'])
+# 			data['MemTotal'] = str(round(info['MemTotal']/ (1024.0 **3)))+" GB"
+# 			data['Images'] = str(info['Images'])
+# 			data['Containers'] = str(info['Containers'])
+# 			data['Running'] = str(info['ContainersRunning'])
+# 			data['Paused'] = str(info['ContainersPaused'])
+# 			data['Stopped'] = str(info['ContainersStopped'])
+# 			for k, v in data.items():
+# 				table.add_row(k, v)
+# 		return table
 
-	def on_mount(self):
-		self.set_interval(self.refresh_rate, self.refresh)
+# 	def on_mount(self):
+# 		self.set_interval(self.refresh_rate, self.refresh)
 
-	def render(self):
-		table = self.getDocker()
-		return Static(renderable=table)
+# 	def render(self):
+# 		table = self.getDocker()
+# 		return Static(renderable=table)
 
 
 class ContainerKill(Widget):
@@ -97,15 +97,24 @@ class DockerContainerStats(Widget):
 	def getContainers(self) -> Table:
 		# client = docker.from_env()
 		containers = self.client.containers.list()
+		info = self.client.info()
 		# client.close()
-		table = Table(show_header=False, header_style='bold magenta', show_lines=False, box=box.HEAVY)
-		table.add_column("Container", style="dim", justify="left")
-		table.add_column("Name", style="dim", justify="left")
-		table.add_column("Status", style="dim", justify="left")
-		table.add_column("CPU %", style="dim", justify="left")
-		table.add_column("MEM USAGE / LIMIT", style="dim", justify="left")
-		table.add_column("MEM %", style="dim", justify="left")
-		table.add_column("NET I/O", style="dim", justify="left")
+		table = Table(show_header=False, show_lines=False, box=box.HEAVY)
+		table.add_column("", no_wrap=False, justify="left") # style="dim",
+		table.add_column("", no_wrap=False, justify="left") # style="dim",
+		table.add_column("", no_wrap=False, justify="left") # style="dim",
+		table.add_column("", no_wrap=False, justify="left") # style="dim",
+		table.add_column("", no_wrap=False, justify="left") # style="dim",
+		table.add_column("", no_wrap=False, justify="left") # style="dim",
+		table.add_column("", no_wrap=False, justify="left") # style="dim",
+
+		table.add_row('[bold magenta]NCPU', '[bold magenta]MemTotal', '[bold magenta]Images', '[bold magenta]Containers', '[bold magenta]Running', '[bold magenta]Paused', '[bold magenta]Stopped')
+		if info == False:
+			table.add_row("installed", str(info))
+		else:
+			table.add_row('[bold cyan]'+str(info['NCPU']), '[bold cyan]'+str(round(info['MemTotal']/ (1024.0 **3)))+" GB", '[bold cyan]'+str(info['Images']), '[bold cyan]'+str(info['Containers']), '[bold cyan]'+str(info['ContainersRunning']), '[bold cyan]'+str(info['ContainersPaused']), '[bold cyan]'+str(info['ContainersStopped']))
+
+		table.add_row("[bold magenta]Container", "[bold magenta]Name", "[bold magenta]Status", "[bold magenta]CPU %", "[bold magenta]MEM USAGE / LIMIT", "[bold magenta]MEM %", "[bold magenta]NET I/O")
 		for c in containers:
 			if 'exrproxy-env' in c.name:
 				stats = c.stats(stream=False)
@@ -120,7 +129,7 @@ class DockerContainerStats(Widget):
 				net_t = convert_size(stats['networks']['eth0']['tx_bytes'])
 				net_r = convert_size(stats['networks']['eth0']['rx_bytes'])
 				net = net_r+" / "+net_t
-				table.add_row(c.short_id, c.name[13::], c.status, cpu, ram, ram_precent, net)
+				table.add_row('[bold cyan]'+c.short_id, '[bold cyan]'+c.name[13::], '[bold cyan]'+c.status, '[bold cyan]'+cpu, '[bold cyan]'+ram, '[bold cyan]'+ram_precent, '[bold cyan]'+net)
 		return table
 
 	def render(self):
