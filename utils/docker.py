@@ -132,7 +132,7 @@ class DockerContainerStats(Widget):
 				# net_r = convert_size(stats['networks']['eth0']['rx_bytes'])
 				# net = net_r+" / "+net_t
 				# table.add_row('[bold cyan]'+c.short_id, '[bold cyan]'+c.name[13::], '[bold cyan]'+c.status, '[bold cyan]'+cpu, '[bold cyan]'+ram, '[bold cyan]'+ram_precent, '[bold cyan]'+net)
-				table.add_row('[bold cyan]'+c.container, '[bold cyan]'+c.container_name, '', '[bold cyan]'+c.cpu_precentage, '', '[bold cyan]'+c.memory_precentage, '')
+				table.add_row('[bold cyan]'+c.container, '[bold cyan]'+c.container_name, '', '[bold cyan]'+c.cpu_percentage, '', '[bold cyan]'+c.memory_percentage, '')
 		return table
 
 	def render(self):
