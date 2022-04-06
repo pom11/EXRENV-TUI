@@ -99,7 +99,7 @@ class DockerContainerStats(Widget):
 		# client = docker.from_env()
 		# containers = self.client.containers.list()
 		containers = pwhales.stats()
-		info = self.client.info()
+		# info = self.client.info()
 		# client.close()
 		table = Table(show_header=False, show_lines=False, box=box.HEAVY)
 		table.add_column("", no_wrap=False, justify="left") # style="dim",
@@ -110,11 +110,11 @@ class DockerContainerStats(Widget):
 		table.add_column("", no_wrap=False, justify="left") # style="dim",
 		table.add_column("", no_wrap=False, justify="left") # style="dim",
 
-		table.add_row('[bold magenta]NCPU', '[bold magenta]MemTotal', '[bold magenta]Images', '[bold magenta]Containers', '[bold magenta]Running', '[bold magenta]Paused', '[bold magenta]Stopped')
-		if info == False:
-			table.add_row("installed", str(info))
-		else:
-			table.add_row('[bold cyan]'+str(info['NCPU']), '[bold cyan]'+str(round(info['MemTotal']/ (1024.0 **3)))+" GB", '[bold cyan]'+str(info['Images']), '[bold cyan]'+str(info['Containers']), '[bold cyan]'+str(info['ContainersRunning']), '[bold cyan]'+str(info['ContainersPaused']), '[bold cyan]'+str(info['ContainersStopped']))
+		# table.add_row('[bold magenta]NCPU', '[bold magenta]MemTotal', '[bold magenta]Images', '[bold magenta]Containers', '[bold magenta]Running', '[bold magenta]Paused', '[bold magenta]Stopped')
+		# if info == False:
+		# 	table.add_row("installed", str(info))
+		# else:
+		# 	table.add_row('[bold cyan]'+str(info['NCPU']), '[bold cyan]'+str(round(info['MemTotal']/ (1024.0 **3)))+" GB", '[bold cyan]'+str(info['Images']), '[bold cyan]'+str(info['Containers']), '[bold cyan]'+str(info['ContainersRunning']), '[bold cyan]'+str(info['ContainersPaused']), '[bold cyan]'+str(info['ContainersStopped']))
 
 		table.add_row("[bold magenta]Container", "[bold magenta]Name", "[bold magenta]Status", "[bold magenta]CPU %", "[bold magenta]MEM USAGE / LIMIT", "[bold magenta]MEM %", "[bold magenta]NET I/O")
 		for c in containers:
@@ -132,7 +132,7 @@ class DockerContainerStats(Widget):
 				# net_r = convert_size(stats['networks']['eth0']['rx_bytes'])
 				# net = net_r+" / "+net_t
 				# table.add_row('[bold cyan]'+c.short_id, '[bold cyan]'+c.name[13::], '[bold cyan]'+c.status, '[bold cyan]'+cpu, '[bold cyan]'+ram, '[bold cyan]'+ram_precent, '[bold cyan]'+net)
-				table.add_row('[bold cyan]'+c.container, '[bold cyan]'+c.container_name, '', '[bold cyan]'+c.cpu_percentage, '', '[bold cyan]'+c.memory_percentage, '')
+				table.add_row('[bold cyan]'+str(c.container), '[bold cyan]'+str(c.container_name), '', '[bold cyan]'+str(c.cpu_percentage), '', '[bold cyan]'+str(c.memory_percentage), '')
 		return table
 
 	def render(self):
