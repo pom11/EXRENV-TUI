@@ -1,3 +1,4 @@
 textual==0.1.17
 docker==5.0.3
+python-on-whales
 psutil

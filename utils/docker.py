@@ -7,6 +7,7 @@ from rich.panel import Panel
 import rich.box as box
 import math
 from docker import DockerClient
+from python_on_whales import docker as pwhales
 
 def convert_size(size_bytes):
 	if size_bytes == 0:
@@ -96,7 +97,8 @@ class DockerContainerStats(Widget):
 
 	def getContainers(self) -> Table:
 		# client = docker.from_env()
-		containers = self.client.containers.list()
+		# containers = self.client.containers.list()
+		containers = pwhales.stats()
 		info = self.client.info()
 		# client.close()
 		table = Table(show_header=False, show_lines=False, box=box.HEAVY)
@@ -116,20 +118,21 @@ class DockerContainerStats(Widget):
 
 		table.add_row("[bold magenta]Container", "[bold magenta]Name", "[bold magenta]Status", "[bold magenta]CPU %", "[bold magenta]MEM USAGE / LIMIT", "[bold magenta]MEM %", "[bold magenta]NET I/O")
 		for c in containers:
-			if 'exrproxy-env' in c.name:
-				stats = c.stats(stream=False)
-				usagedelta = stats['cpu_stats']['cpu_usage']['total_usage'] - stats['precpu_stats']['cpu_usage']['total_usage']
-				systemdelta = stats['cpu_stats']['system_cpu_usage'] - stats['precpu_stats']['system_cpu_usage']
-				len_cpu = len(stats['cpu_stats']['cpu_usage']['percpu_usage'])
-				cpu = str(round((usagedelta / systemdelta) * len_cpu * 100, 2))+ "%"
-				ram_limit = convert_size(stats['memory_stats']['limit'])
-				ram_usage = convert_size(stats['memory_stats']['usage'])
-				ram = ram_usage+" / "+ram_limit
-				ram_precent = str(round(stats['memory_stats']['usage']/stats['memory_stats']['limit'],2)*100)+"%"
-				net_t = convert_size(stats['networks']['eth0']['tx_bytes'])
-				net_r = convert_size(stats['networks']['eth0']['rx_bytes'])
-				net = net_r+" / "+net_t
-				table.add_row('[bold cyan]'+c.short_id, '[bold cyan]'+c.name[13::], '[bold cyan]'+c.status, '[bold cyan]'+cpu, '[bold cyan]'+ram, '[bold cyan]'+ram_precent, '[bold cyan]'+net)
+			if 'exrproxy-env' in c.container_name:
+				# stats = c.stats(stream=False)
+				# usagedelta = stats['cpu_stats']['cpu_usage']['total_usage'] - stats['precpu_stats']['cpu_usage']['total_usage']
+				# systemdelta = stats['cpu_stats']['system_cpu_usage'] - stats['precpu_stats']['system_cpu_usage']
+				# len_cpu = len(stats['cpu_stats']['cpu_usage']['percpu_usage'])
+				# cpu = str(round((usagedelta / systemdelta) * len_cpu * 100, 2))+ "%"
+				# ram_limit = convert_size(stats['memory_stats']['limit'])
+				# ram_usage = convert_size(stats['memory_stats']['usage'])
+				# ram = ram_usage+" / "+ram_limit
+				# ram_precent = str(round(stats['memory_stats']['usage']/stats['memory_stats']['limit'],2)*100)+"%"
+				# net_t = convert_size(stats['networks']['eth0']['tx_bytes'])
+				# net_r = convert_size(stats['networks']['eth0']['rx_bytes'])
+				# net = net_r+" / "+net_t
+				# table.add_row('[bold cyan]'+c.short_id, '[bold cyan]'+c.name[13::], '[bold cyan]'+c.status, '[bold cyan]'+cpu, '[bold cyan]'+ram, '[bold cyan]'+ram_precent, '[bold cyan]'+net)
+				table.add_row('[bold cyan]'+c.container, '[bold cyan]'+c.container_name, '', '[bold cyan]'+c.cpu_precentage, '', '[bold cyan]'+c.memory_precentage, '')
 		return table
 
 	def render(self):
